@@ -1,0 +1,15 @@
+﻿@model IsPlanlamaAPI.Contract.Common.Request.TeamDtos.CreateTeamDto
+
+<h2>Yeni Takım Ekle</h2>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label asp-for="TeamName" class="control-label"></label>
+        <input asp-for="TeamName" class="form-control" />
+        <span asp-validation-for="TeamName" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">Geri</a>
+</form>

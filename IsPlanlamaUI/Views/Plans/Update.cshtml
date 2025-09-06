@@ -1,0 +1,129 @@
+﻿@model IsPlanlamaAPI.Contract.Common.Request.PlanDtos.GetPlanDto
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery AntiForgery
+
+<meta name="csrf-token" content="@AntiForgery.GetAndStoreTokens(ViewContext.HttpContext).RequestToken" />
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Başlık</th>
+            <th>Açıklama</th>
+            <th>Yer</th>
+            <th>İş Günü</th>
+            <th>Atanan Takım ID</th>
+            <th>Atanan User ID</th>
+            <th>Status</th>
+            <th>Revizyon Açıklaması</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr data-plan-id="@Model.Id">
+            <td><input type="text" class="form-control plan-title" value="@Model.Title" /></td>
+            <td><textarea class="form-control plan-aciklama">@Model.IsAciklama</textarea></td>
+            <td><input type="text" class="form-control plan-place" value="@Model.Place" /></td>
+            <td><input type="date" class="form-control plan-isgunu" value="@Model.IsGunu.ToString("yyyy-MM-dd")" /></td>
+            <td><input type="number" class="form-control plan-teamid" value="@Model.TeamId" /></td>
+            <td><input type="number" class="form-control plan-userid" value="@Model.AssignedUserId" /></td>
+            <td>
+                <select class="form-control plan-status">
+                    @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.StatusList)
+                    {
+                        <option value="@item.Value" selected="@(item.Value==Model.Status ? "selected" : null)">
+                            @item.Text
+                        </option>
+                    }
+                </select>
+            </td>
+            <td><textarea class="form-control plan-revizyon">@Model.RevizyonAciklama</textarea></td>
+            <td>
+                <button class="btn btn-sm btn-success save-plan">Kaydet</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Revizyon modal -->
+<div class="modal" tabindex="-1" id="revizyonModal" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content p-3">
+            <h5>Revizyon Açıklaması</h5>
+            <textarea id="revizyonText" class="form-control"></textarea>
+            <div class="mt-2">
+                <button class="btn btn-sm btn-success" id="saveRevizyon">Kaydet</button>
+                <button class="btn btn-sm btn-secondary" id="cancelRevizyon">İptal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+
+        $('.save-plan').click(function(){
+            var row = $(this).closest('tr');
+            var planId = row.data('plan-id');
+            var status = row.find('.plan-status').val();
+            var revizyonAciklama = row.find('.plan-revizyon').val();
+
+            // Eğer Status "RevizyonIstendi" ise Revizyon modal aç
+            if(status === "RevizyonIstendi" && !revizyonAciklama){
+                $('#revizyonModal').show();
+
+                $('#saveRevizyon').off('click').on('click', function(){
+                    revizyonAciklama = $('#revizyonText').val().trim();
+                    if(!revizyonAciklama){
+                        alert("Revizyon açıklaması boş olamaz!");
+                        return;
+                    }
+                    $('#revizyonModal').hide();
+                    $('#revizyonText').val('');
+                    sendUpdate();
+                });
+
+                $('#cancelRevizyon').off('click').on('click', function(){
+                    $('#revizyonModal').hide();
+                    $('#revizyonText').val('');
+                });
+
+                return; // Revizyon modal kapatılmadan gönderme
+            }
+
+            sendUpdate();
+
+               function sendUpdate(){
+        var data = {
+            Id: planId,
+            Title: row.find('.plan-title').val(),
+            IsAciklama: row.find('.plan-aciklama').val(),
+            Place: row.find('.plan-place').val(),
+            IsGunu: row.find('.plan-isgunu').val(),
+            TeamId: parseInt(row.find('.plan-teamid').val()),
+            AssignedUserId: parseInt(row.find('.plan-userid').val()), // <- DTO ile eşleşmeli
+            Status: status,
+            RevizyonAciklama: revizyonAciklama
+        };
+
+        $.ajax({
+            url: '@Url.Action("Update", "Plans")',
+            type: 'POST',
+            data: data,
+            headers: {
+                'RequestVerificationToken': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(){
+                alert('Plan başarıyla güncellendi!');
+                location.reload(); // değişiklikleri görmek için
+            },
+            error: function(xhr){
+                alert('Bir hata oluştu: ' + xhr.responseText);
+            }
+        });
+    }
+            
+        });
+
+    });
+</script>

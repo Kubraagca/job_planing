@@ -1,0 +1,153 @@
+﻿@model List<IsPlanlamaAPI.Contract.Common.Request.PlanDtos.ResultPlanDto>
+
+@{
+    ViewData["Title"] = "Plan Listesi";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+   
+
+        <tr>
+            <th>Başlık</th>
+            <th>Açıklama</th>
+            <th>Yer</th>
+            <th>İş Günü</th>
+            <th>Atanan Takım ID</th>
+            <th>Atanan User ID</th>
+            <th>Status</th>
+            <th>Revizyon Açıklaması</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var plan in Model)
+            {
+                <tr>
+                    <td>@plan.Title</td>
+                    <td>@plan.IsAciklama</td>
+                    <td>@plan.Place</td>
+                    <td>@plan.IsGunu.ToShortDateString()</td>
+                    <td>@plan.TeamId</td>
+                    <td>@plan.UserId</td>
+                    <td>
+                        <select class="status-dropdown form-control" data-plan-id="@plan.Id">
+                            @foreach (var item in (IEnumerable<SelectListItem>)ViewBag.StatusList)
+                            {
+                                <option value="@item.Value" selected="@(item.Value == plan.Status ? "selected" : null)">
+                                    @item.Text
+                                </option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        @if (plan.Status == "RevizyonIstendi")
+                        {
+                            <button class="btn btn-sm btn-info show-revizyon" data-revizyon="@plan.RevizyonAciklama">Açıklamayı Göster</button>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Update" asp-route-id="@plan.Id" class="btn btn-sm btn-warning">Düzenle</a>
+                        <button class="btn btn-sm btn-danger delete-plan" data-plan-id="@plan.Id">Sil</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="text-center">Henüz plan bulunmamaktadır.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Yeni Plan Ekle</a>
+
+
+<!-- Revizyon modal -->
+<div id="revizyonGosterModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+    <div class="modal-dialog" style="margin:100px auto;">
+        <div class="modal-content p-3">
+            <h5>Revizyon Açıklaması</h5>
+            <p id="revizyonIcerik"></p>
+            <button class="btn btn-secondary" id="closeRevModal">Kapat</button>
+        </div>
+    </div>
+</div>
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery AntiForgery
+
+<meta name="csrf-token" content="@AntiForgery.GetAndStoreTokens(ViewContext.HttpContext).RequestToken" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        // Revizyon gösterme
+        $('.show-revizyon').click(function(){
+            var revizyon = $(this).data('revizyon');
+            $('#revizyonIcerik').text(revizyon);
+            $('#revizyonGosterModal').show();
+        });
+
+        $('#closeRevModal').click(function(){
+            $('#revizyonGosterModal').hide();
+        });
+
+        // Status değişince kaydetme
+        $('.status-dropdown').change(function () {
+            var dropdown = $(this);
+            var planId = dropdown.data('plan-id');
+            var status = dropdown.val();
+
+            function sendStatus(revizyonAciklama) {
+                $.ajax({
+                    url: '@Url.Action("UpdateStatus", "Plans")',
+                    type: 'POST',
+                    data: {
+                        id: planId,
+                        status: status,
+                        revizyonAciklama: revizyonAciklama
+                    },
+                    headers: {
+                        'RequestVerificationToken': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function () {
+                        alert('Status güncellendi!');
+                    },
+                    error: function (xhr) {
+                        alert('Bir hata oluştu: ' + xhr.responseText);
+                    }
+                });
+            }
+
+            if(status === "RevizyonIstendi"){
+                $('#revizyonModal').show();
+                $('#revizyonText').val('');
+
+                $('#saveRevizyon').off('click').on('click', function () {
+                    var revizyonAciklama = $('#revizyonText').val().trim();
+                    if(!revizyonAciklama){
+                        alert("Lütfen revizyon açıklamasını girin!");
+                        return;
+                    }
+                    sendStatus(revizyonAciklama);
+                    $('#revizyonModal').hide();
+                });
+
+                $('#cancelRevizyon').off('click').on('click', function(){
+                    $('#revizyonModal').hide();
+                    dropdown.val(dropdown.data('prev-status'));
+                });
+            } else {
+                sendStatus(null);
+            }
+
+            dropdown.data('prev-status', status);
+        });
+    });
+</script>

@@ -1,0 +1,52 @@
+﻿@model List<IsPlanlamaAPI.Contract.Common.Request.TeamDtos.ResultTeamDto>
+
+@{
+    ViewBag.Title = "Takımlar";
+}
+
+<h2>Takımlar</h2>
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Takım Adı</th>
+            <th>Üye Sayısı</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var team in Model)
+            {
+                <tr>
+                    <td>@team.TeamName</td>
+                    <td>@(team.Users != null ? team.Users.Count() : 0)</td>
+                    <td>
+                        <a asp-controller="Teams" asp-action="ManageMembers" asp-route-teamId="@team.Id"
+                           class="btn btn-primary btn-sm">
+                            Üyeleri Yönet
+                        </a>
+
+                        <form asp-controller="Teams" asp-action="Delete" asp-route-id="@team.Id"
+                              method="post" style="display:inline-block;">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Bu takımı silmek istediğinize emin misiniz?');">
+                                Sil
+                            </button>
+                        </form>
+                   
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3" class="text-center">Henüz kayıtlı takım yok.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-success">Yeni Takım Ekle</a>

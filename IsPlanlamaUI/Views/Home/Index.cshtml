@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">İş Planlama - Ana Sayfa</h2>
+
+    <div class="row g-3">
+        <!-- Planlar -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Planlar</h5>
+                    <p class="card-text">Tüm planları görüntüleyin veya yeni plan oluşturun.</p>
+                    <a asp-controller="Plans" asp-action="Index" class="btn btn-primary w-100 mb-2">Plan Listesi</a>
+                    <a asp-controller="Plans" asp-action="Create" class="btn btn-outline-primary w-100">Yeni Plan</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kullanıcılar -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Kullanıcılar</h5>
+                    <p class="card-text">Kullanıcıları listeleyin veya yeni kullanıcı ekleyin.</p>
+                    <a asp-controller="Users" asp-action="Index" class="btn btn-primary w-100 mb-2">Kullanıcı Listesi</a>
+                    <a asp-controller="Users" asp-action="Create" class="btn btn-outline-primary w-100">Yeni Kullanıcı</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Takımlar -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Takımlar</h5>
+                    <p class="card-text">Takımları görüntüleyin veya yeni takım oluşturun.</p>
+                    <a asp-controller="Teams" asp-action="Index" class="btn btn-primary w-100 mb-2">Takım Listesi</a>
+                    <a asp-controller="Teams" asp-action="Create" class="btn btn-outline-primary w-100">Yeni Takım</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-3">
+        <!-- Planlar -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Takvim</h5>
+                
+                    <a asp-controller="Takvim" asp-action="Index" class="btn btn-primary w-100 mb-2">Takvim</a>
+                  
+                </div>
+            </div>
+        </div>
+      
+</div>

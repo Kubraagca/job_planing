@@ -1,0 +1,42 @@
+﻿@model List<IsPlanlamaAPI.Contract.Common.Request.PlanDtos.ResultPlanDto>
+
+<form method="get" asp-controller="Takvim" asp-action="Index">
+    <div>
+        <select name="TeamId" asp-items="ViewBag.Teams" class="form-control">
+    <option value="">--Tüm Takımlar--</option>
+</select>
+
+        <select name="UserId" asp-items="ViewBag.Users" class="form-control">
+    <option value="">--Tüm Kullanıcılar--</option>
+</select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Filtrele</button>
+</form>
+
+<hr />
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Plan Id</th>
+            <th>Takım</th>
+            <th>Kullanıcı</th>
+            <th>İş Günü</th>
+          
+            <th>Durum</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var plan in Model)
+        {
+            <tr>
+                <td>@plan.Id</td>
+                <td>@plan.TeamName</td>
+                <td>@plan.UserName</td>
+                <td>@plan.IsGunu</td>
+                <td>@plan.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,25 @@
+﻿@model List<IsPlanlamaAPI.Core.Entities.TeamMember>
+
+<h2>Takım Üyeleri</h2>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Kullanıcı Adı</th>
+            <th>Soyad</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var member in Model)
+        {
+            <tr>
+                <td>@member.User?.UserName</td>
+                <td>@member.User?.Surname</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Add" a asp-route-teamId="@ViewBag.Team.Id">Üye Ekle</a>
+<a asp-controller="TeamMembers" asp-action="Add" class="btn btn-secondary">Geri</a>

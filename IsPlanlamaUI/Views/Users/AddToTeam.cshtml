@@ -1,17 +1,21 @@
-﻿@model IsPlanlamaAPI.Core.Entities.User
+﻿@model IsPlanlamaAPI.Contract.Common.Request.UserDtos.ResultUserDto
 
-<h2>Kullanıcıyı Takıma Ekle</h2>
+@{
+    ViewData["Title"] = "Takıma Ekle";
+}
 
-<form asp-action="AddToTeam" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
+<div class="container py-4">
+    <h2 class="mb-4">@Model.UserName @Model.Surname kullanıcısını takıma ekle</h2>
 
-    <div class="form-group">
-        <label>Takım</label>
-        <select name="teamId" class="form-control" asp-items="@(new SelectList(ViewBag.Teams, "Id", "TeamName"))">
-            <option value="">Lütfen seçin</option>
-        </select>
-    </div>
+    <form asp-action="AddToTeam" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
 
-    <button type="submit" class="btn btn-success">Kaydet</button>
-    <a asp-action="Index" class="btn btn-secondary">Geri</a>
-</form>
+        <div class="mb-3">
+            <label class="form-label">Takım Seç</label>
+            <select name="teamId" class="form-control" asp-items="ViewBag.Teams"></select>
+        </div>
+
+        <button type="submit" class="btn btn-success">Kaydet</button>
+        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>

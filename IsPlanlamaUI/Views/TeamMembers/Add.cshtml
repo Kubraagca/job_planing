@@ -1,0 +1,24 @@
+﻿@{
+    int teamId = ViewBag.TeamId ?? 0;
+    var users = ViewBag.Users as List<IsPlanlamaAPI.Core.Entities.User> ?? new List<IsPlanlamaAPI.Core.Entities.User>();
+}
+
+<h2>Takıma Üye Ekle</h2>
+
+<form asp-action="Add" method="post">
+    <input type="hidden" name="teamId" value="@teamId" />
+
+    <div class="form-group">
+        <label>Kullanıcı</label>
+        <select name="userId" class="form-control">
+            <option value="">Lütfen seçin</option>
+            @foreach (var user in users)
+            {
+                <option value="@user.Id">@user.UserName @user.Surname</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Ekle</button>
+    <a asp-action="Index" asp-route-teamId="@teamId" class="btn btn-secondary">Geri</a>
+</form>

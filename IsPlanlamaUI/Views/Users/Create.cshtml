@@ -1,0 +1,46 @@
+﻿@model IsPlanlamaAPI.Contract.Common.Request.UserDtos.CreateUserDto
+
+@{
+    ViewData["Title"] = "Yeni Kullanıcı Ekle";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" method="post" novalidate>
+            @Html.AntiForgeryToken()
+
+            <div class="form-group mb-3">
+                <label asp-for="UserName" class="form-label">Ad</label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Surname" class="form-label">Soyad</label>
+                <input asp-for="Surname" class="form-control" />
+                <span asp-validation-for="Surname" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Role" class="form-label">Rol</label>
+                <input asp-for="Role" class="form-control" />
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="TeamId" class="form-label">Takım</label>
+                <select asp-for="TeamId" asp-items="ViewBag.Teams" class="form-select">
+                    <option value="">-- Takım seçin --</option>
+                </select>
+                <span asp-validation-for="TeamId" class="text-danger"></span>
+            </div>
+
+        
+
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Geri</a>
+        </form>
+    </div>
+</div>

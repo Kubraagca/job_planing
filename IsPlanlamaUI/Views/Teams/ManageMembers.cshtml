@@ -1,0 +1,46 @@
+﻿@model List<IsPlanlamaAPI.Contract.Common.Request.UserDtos.ResultUserDto>
+
+<h2>Takım Üyeleri</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Ad</th>
+            <th>Soyad</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var member in Model)
+        {
+            <tr>
+                <td>@member.UserName</td>
+                <td>@member.Surname</td>
+                <td>
+                    <form asp-action="RemoveFromTeam" method="post" style="display:inline-block;">
+                        <input type="hidden" name="teamId" value="@ViewBag.TeamId" />
+                        <input type="hidden" name="userId" value="@member.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Takımdan Çıkar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<h4>Kullanıcı Ekle</h4>
+<form asp-action="AddToTeam" method="post">
+    <input type="hidden" name="teamId" value="@ViewBag.TeamId" />
+    <div class="form-group">
+        <select name="userId" class="form-control mb-2">
+            <option value="">Kullanıcı Seç</option>
+            @foreach (var user in ViewBag.AllUsers as List<IsPlanlamaAPI.Contract.Common.Request.UserDtos.ResultUserDto>)
+            {
+                <option value="@user.Id">@user.UserName @user.Surname</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Ekle</button>
+</form>
