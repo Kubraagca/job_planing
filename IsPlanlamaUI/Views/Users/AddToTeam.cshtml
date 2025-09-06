@@ -1,0 +1,17 @@
+﻿@model IsPlanlamaAPI.Core.Entities.User
+
+<h2>Kullanıcıyı Takıma Ekle</h2>
+
+<form asp-action="AddToTeam" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="form-group">
+        <label>Takım</label>
+        <select name="teamId" class="form-control" asp-items="@(new SelectList(ViewBag.Teams, "Id", "TeamName"))">
+            <option value="">Lütfen seçin</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">Geri</a>
+</form>
